@@ -21,7 +21,6 @@ static bool	ft_isdigit(char	*str)
 
 int main()
 {
-    // Test cases
     char *test_cases[] = {
         "12345",       // Valid digits
         "00123",       // Leading zeros
