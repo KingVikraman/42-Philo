@@ -11,6 +11,8 @@
 #define STD_ERR_LIMITS	 "One or more arguments are out of range!"
 #define	STD_ERR_START	"All arguments are valid! Starting the simulation..."
 
+#endif
+
 /* okay, let me state the task that philosophers project demands.
 So what its about is that, there are five philosophers and one so called
 pool of data and what we are tasked to do is that to create a program
