@@ -11,6 +11,15 @@
 #define STD_ERR_LIMITS	 "One or more arguments are out of range!"
 #define	STD_ERR_START	"All arguments are valid! Starting the simulation..."
 
+
+
+// Example of a struct:
+
+// struct def_types {
+// 	char name[50];
+// 	int age;
+// 	float gpa;
+// };
 #endif
 
 /* okay, let me state the task that philosophers project demands.
