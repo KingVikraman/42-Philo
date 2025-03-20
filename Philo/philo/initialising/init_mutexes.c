@@ -94,12 +94,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ERR_00 "Starting mutex initialisation"
-#define ERR_01 "Initialising the mutex for the fork %d."
-#define ERR_02 "FAILURE:Fork also cannot initialise, HAIYA!!!."
-#define ERR_03
-#define ERR_04
-#define ERR_05
+#define ERR_00 "Starting mutex initialisation\n"
+#define ERR_01 "Initialising the mutex for the fork %d.\n"
+#define ERR_02 "FAILURE:Fork also cannot initialise, HAIYA!!!.\n"
+#define ERR_03 "The forks ahh is connected ahh successfullyy!!.\n"
+#define ERR_04 "Initialising the writing lock ahh!\n "
+#define ERR_05 "FAILURE: Writing lock also cannot initialise. GG!!!\n."
+#define ERR_06 "The writing locks ahh is connected ahh successfully!!\n"
+#define ERR_07 "All mutexes are initialised smoothly!\n"
 
 typedef struct s_data{
 		int sum_philo;
@@ -113,36 +115,36 @@ int setup_forks_mutex(t_data *data)
 	int error;
 
 	fork = 0;
-	printf("Starting mutex initialisation\n");
+	printf(ERR_00);
 
 	while(fork < data->sum_philo)
 	{
-		printf("Initialising the mutex for the fork %d. \n", fork);
+		printf(ERR_01, fork);
 		error = pthread_mutex_init(&(data->fork[fork]), NULL);
 		if (error != 0)
 		{
-			printf("FAILURE:Fork also cannot initialise, HAIYA!!!.\n", fork);
+			printf(ERR_02, fork);
 			return (-1);
 		}
 		else
 		{
-			printf("The forks ahh is connected ahh successfullyy!!\n");
+			printf(ERR_03);
 		}
 		fork++;
 	}
-	printf(" Initialising the writing lock ahh! \n");
+	printf(ERR_04);
 	error = pthread_mutex_init(&(data->writing_lock), NULL);
 	if (error != 0)
 	{
-		printf("FAILURE: Writing lock also cannot initialise. GG!!!.\n", fork);
+		printf(ERR_05, fork);
 		return (-1);
 	}
 	else
 	{
-		printf("The writing locks ahh is connected ahh successfully!!\n", fork);
+		printf(ERR_06, fork);
 	}
 	
-	printf("All mutexes are initialised smoothly!\n");
+	printf(ERR_07);
 	return (0);
 }
 
