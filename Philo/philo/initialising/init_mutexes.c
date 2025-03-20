@@ -123,8 +123,9 @@ int setup_forks_mutex(t_data *data)
 		error = pthread_mutex_init(&(data->fork[fork]), NULL);
 		if (error != 0)
 		{
-			printf(ERR_02, fork);
-			return (-1);
+			// printf(ERR_02, fork);
+			// return (-1);
+			return(printf(ERR_02, fork), -1);
 		}
 		else
 		{
@@ -136,16 +137,18 @@ int setup_forks_mutex(t_data *data)
 	error = pthread_mutex_init(&(data->writing_lock), NULL);
 	if (error != 0)
 	{
-		printf(ERR_05, fork);
-		return (-1);
+		// printf(ERR_05, fork);
+		// return (-1);
+		return(printf(ERR_05, fork), -1);
 	}
 	else
 	{
 		printf(ERR_06, fork);
 	}
 	
-	printf(ERR_07);
-	return (0);
+	// printf(ERR_07);
+	// return (0);
+	return(printf(ERR_07, fork), -1);
 }
 
 
