@@ -94,6 +94,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define ERR_00 "Starting mutex initialisation"
+#define ERR_01 "Initialising the mutex for the fork %d."
+#define ERR_02 "FAILURE:Fork also cannot initialise, HAIYA!!!."
+#define ERR_03
+#define ERR_04
+#define ERR_05
 
 typedef struct s_data{
 		int sum_philo;
