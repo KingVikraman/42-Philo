@@ -22,4 +22,4 @@ what that does is that it calls gettime again to get the updated time, which
 possibly could be a one miliseocd diffrence, then it minusus it with the current 
 int to see if its more than equal to the time(The time you put  int the terminal)
 then if the condition is true it returns and exits the loop but if its not 
-more than equal to then it would keep looping.
+more than equal to then it would keep looping. 
