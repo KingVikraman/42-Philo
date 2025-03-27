@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/time.h>
+#include <pthread.h>
+
 
 #define	STD_ERR_VALID	"Invalid number of arguments! Usage: ./philo number_of_philos time_to_die time_to_eat time_to_sleep [must_eat]"
 #define STD_ERR_NUMBERS	 "Arguments must be positive numbers!"
@@ -24,17 +26,18 @@ typedef struct s_data{
 	int philo_sum;
 	pthread_mutex_t *fork;
 	pthread_mutex_t writing_lock;
-	//t_args args;
+	t_args *args;
 } t_data;
 typedef struct s_args{
-	int philo_sum;
-	int death_time;
-	int feasting_time;
-	int sleeping_time;
-	int meals_sum;
+	int 	philo_sum;
+	int 	death_time;
+	int 	feasting_time;
+	int 	sleeping_time;
+	int 	meals_sum;
 } t_args;
 
 
+void	init_all(t_data *data, char **argv, int argc);
 // Example of a struct:
 
 // struct def_types {
