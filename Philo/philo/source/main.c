@@ -1,10 +1,11 @@
-#include "../inlcudes/philo.h"
+#include "../includes/philo.h"
 
 int main(int argc, char **argv)
 {
+	t_data data;
 	if (argc != 5 && argc != 6)
-		return(STR_ERR_VALID);
-	if (!is_valid_check)
+		return(printf(STR_ERR_VALID), 1);
+	if (!is_valid_check(argv, data))
 		return ()
 }
 

@@ -7,11 +7,11 @@
 
 typedef struct s_args
 {
-    int total_philo_num;
+    int philo_sum;
     int death_time;
-    int eating_time;
+    int feasting_time;
     int sleeping_time;
-    int total_meals;
+    int meals_sum;
 } t_args;
 
 
@@ -38,22 +38,29 @@ static int ft_atoi(char *str)
 	unsigned long nb = 0;
 
 	while (str[i] >= '0' && str[i] <= '9')
-	{
-		nb = nb * 10 + (str[i] - '0');
+	{           10             '2' --> 2 = 12
+		nb = nb * 10 + | (str[i] - '0'); 
 		if (nb > INT_MAX)  // Handle overflow 
 			return -1;
 		i++;
 	}
 	return (int)nb;
+
+	// nb = 0 * 10 + 0 = 0
+	// nb = 0 + 0 = 0
+	// nb = 0 *10 + ('9' - '0')
+
+	// char a = '9' - '0'
 }
+ 
 
 
 bool is_valid_check(char **argv, t_args *args)
 {
     int i = 0;
     int nb;
-
-    while (argv[++i])
+   
+    while (argv[++i]) // philo 5 800 200 200 [optional]
     {
         if (!ft_isdigit(argv[i]))
             return (printf("Not a number: %s\n", argv[i]), false);
@@ -67,12 +74,13 @@ bool is_valid_check(char **argv, t_args *args)
             return (printf("Number is a negative value or overflowed: %d\n", nb), false);
 
         //Stores the converted values inside the struct
-        if (i == 1) args->total_philo_num = nb;
+        if (i == 1) args->philo_sum = nb;
         if (i == 2) args->death_time = nb;
-        if (i == 3) args->eating_time = nb;
+        if (i == 3) args->feasting_time = nb;
         if (i == 4) args->sleeping_time = nb;
-        if (i == 5) args->total_meals = nb;
-    }
+        if (i == 5) args->meals_sum = nb; // Garbage value if optional meal cout not given
+		//-----------data->args.meals_sum =nb;
+	}
 
     return true;
 }
