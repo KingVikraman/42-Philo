@@ -11,7 +11,7 @@ void	timer(long long int time)
 	}
 }
 
-// This function, acts like a pause, to find the amount of time the philo sould wait
+// This function, acts like a pause, to find the amount of time the philo should wait
 // before he continues the simulation.
 
 // It uses long long int time due to the reason of having values in microseconds.

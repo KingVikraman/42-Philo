@@ -1,3 +1,4 @@
+
 long long int	gettime(void)
 {
 	struct timeval	time; // struct to store time in seconds and milisecods.
