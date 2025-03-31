@@ -1,11 +1,6 @@
-#include "stdlib.h"
-#include "stdio.h"
-#include "unistd.h"
-#include "pthread.h"
-#include "stdbool.h"
-#include "limits.h"
 
-#define MAX_PHILOS 200  // Define MAX_PHILOS
+
+#include "../includes/philo.h"
 
 typedef struct s_args
 {
@@ -40,7 +35,7 @@ static int ft_atoi(char *str)
 	while (str[i] >= '0' && str[i] <= '9')
 	{
 		nb = nb * 10 + (str[i] - '0');
-		if (nb > INT_MAX)  // Handle overflow 
+		if (nb > MAX_INT_LIMIT)  // Handle overflow 
 			return -1;
 		i++;
 	}

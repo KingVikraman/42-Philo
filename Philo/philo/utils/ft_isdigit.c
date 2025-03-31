@@ -3,7 +3,6 @@
 #include <stdio.h>
 
 #define MAX_PHILOS 200
-#define INT_MAX 250
 
 static bool	ft_isdigit(char	*str)
 {
