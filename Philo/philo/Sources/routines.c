@@ -6,7 +6,7 @@
 /*   By: rvikrama <rvikrama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:34:58 by rvikrama          #+#    #+#             */
-/*   Updated: 2025/03/29 20:39:41 by rvikrama         ###   ########.fr       */
+/*   Updated: 2025/03/31 23:54:35 by rvikrama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,11 @@ void	print_action(t_data *data, int id, char *str)
 
 }
 
-void	eat(t_philo *philo)
+void	eat(t_data *data)
 {
+	t_philo *philo;
 
-	t_data *data;
-
-	data = philo->data;
+	philo = data->philo;
 	pthread_mutex_lock(&(data->fork[data->philo->id_left]));
 	print_action(data, data->philo->id, "has taken a fork");
 	pthread_mutex_lock(&(data->fork[data->philo->id_right]));
@@ -50,6 +49,8 @@ void	*routine(void *philosopher)
 	philo = (t_philo *)philosopher;
 	philo->last_feast = gettime();
 	data = philo->data;
+	// if (data->philo_sum == 1)
+	// 	return (single_philo());
 	if (philo->id % 2 == 0)
 	{
 		print_action(data, philo->id, "is thinking");
@@ -57,7 +58,7 @@ void	*routine(void *philosopher)
 	}
 	while (1)
 	{
-		eat(philo);
+		eat(data);
 		print_action(data, philo->id, "is sleeping");
 		timer(data->args->sleeping_time);
 		print_action(data, philo->id, "is thinking");
@@ -76,6 +77,7 @@ void	end_checker(t_data *data)
 	{
 		while (i < data->philo_sum)
 		{
+			// printf("Hi i am in this loop\n");
 			if (gettime() - data->philo[i].last_feast > data->args->death_time)
 			{
 				print_action(data, i, "died");
@@ -101,6 +103,8 @@ void create_threads(t_data * data)
 	int i;
 
 	i = 0;
+	// printf("%d\n", data->philo_sum);
+	// printf("%d\n", data->philo_sum);
 	while ( i < data->philo_sum) // Lopps til all philo has got a tread on its own.
 	{
 		if (pthread_create(&(data->philo[i].thread), NULL, routine,
@@ -112,7 +116,18 @@ void create_threads(t_data * data)
 
 void	start_sim(t_data *data)
 {
+	// int i = 0;
+
 	data->args->start_time = gettime(); // Stroing the starting time of the sim.
+	printf("%d\n", data->philo_sum);
 	create_threads(data); //Calls function to create the threads for the philo.
 	end_checker(data); // Function to help monitor the sim.
+	// while ( i < data->philo_sum) // Lopps til all philo has got a tread on its own.
+	// {
+	// 	pthread_join(data->philo[i].thread, NULL);
+	// 	i++;// Increment.
+	// }
+	printf("eeeeeeeeeeeeee\n");
 }
+
+

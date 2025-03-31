@@ -15,7 +15,6 @@ void	eat(t_philo *philo)
 	pthread_mutex_unlock(&(data->fork[philo->right_fork_id]));
 }
 
-
 Code Explaination:
 	-> This code is responsible for handling the philos eating routine.
 	   in this simulation...

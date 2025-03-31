@@ -42,13 +42,18 @@ int main(int argc, char **argv)
 	
 	
 	t_data *data = malloc(sizeof(t_data));
+	data->args = malloc(sizeof(t_args));
 	if (argc != 5 && argc != 6)
 		return(printf(VALIDITY_ERROR), 1);
 	if (is_valid_check(data, argv))
 		print_error(2);
 	init_all(data, argc);
-	create_threads(data);
+	// printf("%d\n", data->philo_sum);
+	start_sim(data);
+	printf("after sim");
 	print_success(1);
+	free(data);
+
 }
 
 

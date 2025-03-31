@@ -6,7 +6,7 @@
 /*   By: rvikrama <rvikrama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 15:03:18 by rvikrama          #+#    #+#             */
-/*   Updated: 2025/03/29 20:00:32 by rvikrama         ###   ########.fr       */
+/*   Updated: 2025/03/31 23:27:32 by rvikrama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,26 +21,42 @@ int		setup_fork_mutex(t_data *data)
 	int error;
 
 	fork = 0;
+	data->fork = malloc(sizeof(pthread_mutex_t) * data->philo_sum);
 	while (fork < data->philo_sum)
 	{
-		error = pthread_mutex_init(&(data->fork[fork]), NULL);
+		printf("%d\n",fork);
+		error = pthread_mutex_init(&data->fork[fork], NULL);
 		if (error != 0)
+		{
+			// printf("%d\n", error);
+			// printf("%d\n", fork);
 			return(printf(ERR_00));
+		}
 		else
 			printf(ERR_01);
 		fork++;
 
 	}
-	printf(ERR_02);
-	error = pthread_mutex_init(&(data->writing_lock), NULL);
+	// printf(ERR_02);
+	error = pthread_mutex_init(&data->writing_lock, NULL);
+	// 	pthread_mutex_lock(&(data->writing_lock));	
+	// 	printf("hello\n");
+	// 	pthread_mutex_unlock(&(data->writing_lock));
+	// printf("init writing lock\n");
 	if (error != 0)
+	{
+		printf("ERROR lock\n");
 		return(printf(ERR_03), -1);
+	}
 	else
-		printf(ERR_04);
-	return(printf(ERR_05), -1);
+		return(printf(ERR_05), -1);
+		// printf(ERR_04);
 }
+
 void philo_init(t_data *data)
 {
+	data->philo = malloc(sizeof(t_philo) * data->philo_sum);
+
 	int i = 0;
 
 	while (i < data->philo_sum)
@@ -50,6 +66,7 @@ void philo_init(t_data *data)
 		data->philo[i].id_right = (i + 1) % data->philo_sum;
 		data->philo[i].last_feast = 0;
 		data->philo[i].num_of_meals = 0;
+		data->philo[i].data = data;
 		i++;
 	}
 }
@@ -58,7 +75,7 @@ void philo_init(t_data *data)
 void 	init_all(t_data *data, int argc)
 {
 	if ((argc == 6 && data->args->meals_sum < 0) ||
-		(data->philo_sum < 1) || (data->args->death_time)
+		(data->philo_sum < 1) || (data->args->death_time < 60)
 		|| (data->args->feasting_time < 60) || (data->args->sleeping_time < 60)
 		|| (data->philo_sum > 200))
 	{

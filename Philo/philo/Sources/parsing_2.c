@@ -59,18 +59,19 @@ int is_valid_check(t_data *data ,char **argv)
     int i = 0;
     int nb;
    
-    while (argv[++i]) // philo 5 800 200 200 [optional]
+    data->args->meals_sum = 0;
+	while (argv[++i]) // philo 5 800 200 200 [optional]
     {
         if (!ft_isdigit(argv[i]))
-            return (printf("Not a number: %s\n", argv[i]), false);
+            return (printf("Not a number: %s\n", argv[i]));
 
         nb = ft_atoi(argv[i]);
 
         if (i == 1 && (nb <= 0 || nb > MAX_PHILOS))
-            return (printf("Invalid number of philos: %d\n", nb), false);
-			printf("%d\n", nb);
+            return (printf("Invalid number of philos: %d\n", nb));
+			 printf("%d\n", nb);
 	        if (i != 1 && nb == -1)
-            return (printf("Number is a negative value or overflowed: %d\n", nb), false);
+            return (printf("Number is a negative value or overflowed: %d\n", nb));
 
         //Stores the converted values inside the struct
         if (i == 1) data->philo_sum = nb;
