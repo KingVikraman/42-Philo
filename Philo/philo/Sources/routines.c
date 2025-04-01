@@ -6,7 +6,7 @@
 /*   By: rvikrama <rvikrama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:34:58 by rvikrama          #+#    #+#             */
-/*   Updated: 2025/04/01 16:01:58 by rvikrama         ###   ########.fr       */
+/*   Updated: 2025/04/01 16:15:55 by rvikrama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	*routine(void *philosopher)
 	}
 	while (1)
 	{
-		eat(data);
+		eat(philo);
 		print_action(data, philo->id, "is sleeping");
 		timer(data->args->sleeping_time);
 		print_action(data, philo->id, "is thinking");
@@ -127,12 +127,28 @@ void create_threads(t_data * data)
 
 void	start_sim(t_data *data)
 {
-	// int i = 0;
+	int i;
 
 	data->args->start_time = gettime(); // Stroing the starting time of the sim.
-	printf("%d\n", data->philo_sum);
+	// printf("%d\n", data->philo_sum);
 	create_threads(data); //Calls function to create the threads for the philo.
 	end_checker(data); // Function to help monitor the sim.
+
+
+	i = 0;
+	while (i < data->philo_sum)
+	{
+		pthread_join(data->philo[i].thread, NULL);
+		i++;
+	}
+
+	i = 0;
+	while (i < data->philo_sum)
+	{
+		pthread_mutex_destroy(&data->fork[i]);
+		i++;
+	}
+	pthread_mutex_destroy(&data->writing_lock);
 	// while ( i < data->philo_sum) // Lopps til all philo has got a tread on its own.
 	// {
 	// 	pthread_join(data->philo[i].thread, NULL);
