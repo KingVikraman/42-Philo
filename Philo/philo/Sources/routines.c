@@ -6,7 +6,7 @@
 /*   By: rvikrama <rvikrama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:34:58 by rvikrama          #+#    #+#             */
-/*   Updated: 2025/03/31 23:54:35 by rvikrama         ###   ########.fr       */
+/*   Updated: 2025/04/01 16:01:58 by rvikrama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,19 +23,30 @@ void	print_action(t_data *data, int id, char *str)
 
 }
 
-void	eat(t_data *data)
+void	eat(t_philo *philo)
 {
-	t_philo *philo;
+	t_data *data;
 
-	philo = data->philo;
+	
+	data = philo->data;
 	pthread_mutex_lock(&(data->fork[data->philo->id_left]));
-	print_action(data, data->philo->id, "has taken a fork");
+	print_action(data, philo->id, "has taken a fork");
+
+	if (data->philo_sum == 1)
+	{
+		pthread_mutex_unlock(&(data->fork[philo->id_left]));
+		return;
+	}
+	
 	pthread_mutex_lock(&(data->fork[data->philo->id_right]));
-	print_action(data, data->philo->id, "has taken a fork");
+	print_action(data, philo->id, "has taken a fork");
+	
 	data->philo->last_feast = gettime();
-	print_action(data, data->philo->id, "is eating");
+	print_action(data, philo->id, "is eating");
 	data->philo->num_of_meals++;
+
 	timer(data->args->feasting_time);
+	
 	pthread_mutex_unlock(&(data->fork[data->philo->id_left]));
 	pthread_mutex_unlock(&(data->fork[data->philo->id_right]));
 }
@@ -72,7 +83,7 @@ void	end_checker(t_data *data)
 	int	i;
 
 	i = 0;
-	usleep(50);
+	usleep(200);
 	while (1)
 	{
 		while (i < data->philo_sum)
