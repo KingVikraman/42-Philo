@@ -6,7 +6,7 @@
 /*   By: rvikrama <rvikrama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:34:58 by rvikrama          #+#    #+#             */
-/*   Updated: 2025/04/01 16:15:55 by rvikrama         ###   ########.fr       */
+/*   Updated: 2025/04/04 00:22:10 by rvikrama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,14 @@
 void	print_action(t_data *data, int id, char *str)
 {
 	pthread_mutex_lock(&(data->writing_lock));
-	printf("%lld ", gettime() - data->args->start_time);
-	printf("%d ", id + 1);
-	printf("%s\n", str);
+	pthread_mutex_lock(&(data->sim_lock));
+	if (data->sim_running)
+	{
+		printf("%lld ", gettime() - data->args->start_time);
+		printf("%d ", id + 1);
+		printf("%s\n", str);
+	}
+	pthread_mutex_unlock(&(data->sim_lock));
 	pthread_mutex_unlock(&(data->writing_lock));
 
 }
@@ -26,31 +31,61 @@ void	print_action(t_data *data, int id, char *str)
 void	eat(t_philo *philo)
 {
 	t_data *data;
-
-	
 	data = philo->data;
-	pthread_mutex_lock(&(data->fork[data->philo->id_left]));
-	print_action(data, philo->id, "has taken a fork");
-
+	
 	if (data->philo_sum == 1)
 	{
+		pthread_mutex_lock(&(data->fork[philo->id_left]));
+		print_action(data, philo->id, "has taken a fork");
 		pthread_mutex_unlock(&(data->fork[philo->id_left]));
+		timer(data->args->death_time + 10);
 		return;
 	}
 	
-	pthread_mutex_lock(&(data->fork[data->philo->id_right]));
-	print_action(data, philo->id, "has taken a fork");
-	
-	data->philo->last_feast = gettime();
-	print_action(data, philo->id, "is eating");
-	data->philo->num_of_meals++;
+	if (philo->id % 2 == 0)
+	{
+		pthread_mutex_lock(&(data->fork[philo->id_right]));
+		pthread_mutex_lock(&(data->fork[philo->id_left]));
+	}
+	else
+	{
+		pthread_mutex_lock(&(data->fork[philo->id_left]));
+		pthread_mutex_lock(&(data->fork[philo->id_right]));
+	}
 
+	print_action(data, philo->id, "has taken a fork");
+	print_action(data, philo->id, "has taken a fork");
+
+	print_action(data, philo->id, "is eating");	
+	
+	pthread_mutex_lock(&philo->feast_lock);
+	philo->last_feast = gettime();
+	philo->num_of_meals++;
+	pthread_mutex_unlock(&philo->feast_lock);
 	timer(data->args->feasting_time);
 	
-	pthread_mutex_unlock(&(data->fork[data->philo->id_left]));
-	pthread_mutex_unlock(&(data->fork[data->philo->id_right]));
+	if (philo->id % 2 == 0)
+	{
+		pthread_mutex_unlock(&(data->fork[philo->id_left]));
+		pthread_mutex_unlock(&(data->fork[philo->id_right]));
+	}
+	else
+	{
+		pthread_mutex_unlock(&(data->fork[philo->id_right]));
+		pthread_mutex_unlock(&(data->fork[philo->id_left]));
+	}
 }
 
+bool check_stop(t_data *data)
+{
+	bool status;
+
+	pthread_mutex_lock(&data->sim_lock);
+	status = data->sim_running;
+	pthread_mutex_unlock(&data->sim_lock);
+
+	return (status);
+}
 
 void	*routine(void *philosopher)
 {
@@ -62,12 +97,12 @@ void	*routine(void *philosopher)
 	data = philo->data;
 	// if (data->philo_sum == 1)
 	// 	return (single_philo());
-	if (philo->id % 2 == 0)
+	if (philo->id % 2 != 0) // 0 % 2 = 0
 	{
 		print_action(data, philo->id, "is thinking");
-		timer(data->args->feasting_time);
+		timer(data->args->feasting_time / 2);
 	}
-	while (1)
+	while (check_stop(data))
 	{
 		eat(philo);
 		print_action(data, philo->id, "is sleeping");
@@ -78,35 +113,96 @@ void	*routine(void *philosopher)
 }
 
 
-void	end_checker(t_data *data)
+// void	end_checker(t_data *data)
+// {
+// 	int	i;
+// 	int all_ate;
+
+// 	while (1)
+// 	{
+// 		i = 0;
+// 		while (i < data->philo_sum)
+// 		{
+// 			if (gettime() - data->philo[i].last_feast > data->args->death_time)
+// 			{
+// 				print_action(data, i, "died");
+// 				exit(0);
+// 			}
+// 			i++;
+// 		}
+		
+// 		if (data->args->meals_sum!= -1)
+// 		{
+// 			all_ate = 1;
+// 			i = 0;
+// 			while(i < data->philo_sum)
+// 			{
+// 				if (data->philo[i].num_of_meals < data->args->meals_sum)
+// 				{
+// 					all_ate = 0;
+// 					break;
+// 				}
+// 				i++;
+// 			}
+// 			if (all_ate)
+// 				return;
+// 		}
+// 		usleep(1000);
+// 	}
+// }
+
+void end_checker(t_data *data)
 {
-	int	i;
+    int         i;
+    bool         all_ate;
+    long long   now;
 
-	i = 0;
-	usleep(200);
-	while (1)
-	{
-		while (i < data->philo_sum)
-		{
-			// printf("Hi i am in this loop\n");
-			if (gettime() - data->philo[i].last_feast > data->args->death_time)
-			{
-				print_action(data, i, "died");
-				exit(0);
-			}
-			i++;
-		}
-		i = 0;
-		if (data->args->meals_sum!= -1)
-		{
-			while (data->philo[i].num_of_meals >= data->philo_sum)
-				i++;
-			if (i == data->philo_sum)
-				exit(0);
-		}
-	}
+    while (1)
+    {
+        i = -1;
+    	now = gettime();
+        while (++i < data->philo_sum)
+        {
+            pthread_mutex_lock(&data->philo[i].feast_lock);
+            if ((int)(now - data->philo[i].last_feast) > data->args->death_time)
+            {
+                print_action(data, i, "died");
+                
+				pthread_mutex_lock(&data->sim_lock);
+				data->sim_running = false;
+
+				pthread_mutex_unlock(&data->sim_lock);
+				pthread_mutex_unlock(&data->philo[i].feast_lock);
+				
+				return ;
+            }
+            pthread_mutex_unlock(&data->philo[i].feast_lock);
+        }
+
+        if (data->args->meals_sum > 0)
+        {
+            all_ate = true;
+            i = -1;
+            while (++i < data->philo_sum && all_ate)
+            {
+                pthread_mutex_lock(&data->philo[i].feast_lock);
+                all_ate = (data->philo[i].num_of_meals >= data->args->meals_sum);
+                pthread_mutex_unlock(&data->philo[i].feast_lock);
+            }
+            if (all_ate)
+            {
+                print_action(data, -1, "All philosophers are full");
+
+                pthread_mutex_lock(&data->sim_lock);
+				data->sim_running = false;
+				pthread_mutex_unlock(&data->sim_lock);
+                
+				return;
+            }
+        }
+        usleep(500);
+    }
 }
-
 
 
 void create_threads(t_data * data)
@@ -123,25 +219,28 @@ void create_threads(t_data * data)
 			print_error(4);// Error, just incase if the thread creation fails.
 		i++;// Increment.
 	}
+
+	
 }
 
 void	start_sim(t_data *data)
 {
 	int i;
 
+	data->sim_running = true; 
 	data->args->start_time = gettime(); // Stroing the starting time of the sim.
 	// printf("%d\n", data->philo_sum);
 	create_threads(data); //Calls function to create the threads for the philo.
+	
 	end_checker(data); // Function to help monitor the sim.
-
-
+	
 	i = 0;
 	while (i < data->philo_sum)
 	{
 		pthread_join(data->philo[i].thread, NULL);
 		i++;
 	}
-
+	
 	i = 0;
 	while (i < data->philo_sum)
 	{

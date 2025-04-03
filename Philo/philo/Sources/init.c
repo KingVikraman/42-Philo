@@ -6,7 +6,7 @@
 /*   By: rvikrama <rvikrama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 15:03:18 by rvikrama          #+#    #+#             */
-/*   Updated: 2025/03/31 23:27:32 by rvikrama         ###   ########.fr       */
+/*   Updated: 2025/04/03 22:41:38 by rvikrama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int		setup_fork_mutex(t_data *data)
 	int error;
 
 	fork = 0;
-	data->fork = malloc(sizeof(pthread_mutex_t) * data->philo_sum);
 	while (fork < data->philo_sum)
 	{
 		printf("%d\n",fork);
@@ -39,6 +38,7 @@ int		setup_fork_mutex(t_data *data)
 	}
 	// printf(ERR_02);
 	error = pthread_mutex_init(&data->writing_lock, NULL);
+	error = pthread_mutex_init(&data->sim_lock, NULL);
 	// 	pthread_mutex_lock(&(data->writing_lock));	
 	// 	printf("hello\n");
 	// 	pthread_mutex_unlock(&(data->writing_lock));
@@ -55,7 +55,6 @@ int		setup_fork_mutex(t_data *data)
 
 void philo_init(t_data *data)
 {
-	data->philo = malloc(sizeof(t_philo) * data->philo_sum);
 
 	int i = 0;
 
@@ -66,6 +65,7 @@ void philo_init(t_data *data)
 		data->philo[i].id_right = (i + 1) % data->philo_sum;
 		data->philo[i].last_feast = 0;
 		data->philo[i].num_of_meals = 0;
+		pthread_mutex_init(&data->philo[i].feast_lock, NULL);
 		data->philo[i].data = data;
 		i++;
 	}
