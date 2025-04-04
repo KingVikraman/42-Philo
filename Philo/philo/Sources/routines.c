@@ -6,7 +6,7 @@
 /*   By: rvikrama <rvikrama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:34:58 by rvikrama          #+#    #+#             */
-/*   Updated: 2025/04/04 21:14:57 by rvikrama         ###   ########.fr       */
+/*   Updated: 2025/04/04 21:28:37 by rvikrama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,12 +176,14 @@ void 	create_threads(t_data * data)
 	int i;
 
 	i = 0;
-	while ( i < data->philo_sum) // Lopps til all philo has got a tread on its own.
+	
+	while ( i < data->philo_sum)
 	{
+		data->philo[i].last_feast = data->start_time;
 		if (pthread_create(&(data->philo[i].thread), NULL, routine,
 			&(data->philo[i])) != 0)
-			print_error(4);// Error, just incase if the thread creation fails.
-		i++;// Increment.
+			print_error(4);
+		i++;
 	}
 }
 
@@ -191,12 +193,6 @@ void	start_sim(t_data *data)
 
 	data->sim_running = true; 
 	data->start_time = gettime(); // Stroing the starting time of the sim.
-	i = 0;
-	while (i < data->philo_sum)
-	{
-		data->philo[i].last_feast = data->start_time;
-		i++;
-	}
 	create_threads(data); //Calls function to create the threads for the philo.
 	end_checker(data); // Function to help monitor the sim.
 	
