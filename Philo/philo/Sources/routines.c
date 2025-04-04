@@ -6,7 +6,7 @@
 /*   By: rvikrama <rvikrama@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 17:34:58 by rvikrama          #+#    #+#             */
-/*   Updated: 2025/04/04 21:28:37 by rvikrama         ###   ########.fr       */
+/*   Updated: 2025/04/04 22:09:08 by rvikrama         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,20 +50,11 @@ void	eat(t_philo *philo)
 		return;
 	}
 	
-	if (philo->id % 2 == 0)
-	{
-		pthread_mutex_lock(&(data->fork[philo->id_right]));
-		pthread_mutex_lock(&(data->fork[philo->id_left]));
-	}
-	else
-	{
-		pthread_mutex_lock(&(data->fork[philo->id_left]));
-		pthread_mutex_lock(&(data->fork[philo->id_right]));
-	}
+	pthread_mutex_lock(&(data->fork[philo->id_left]));
+	print_action(data, philo->id, "has taken a fork");
+	pthread_mutex_lock(&(data->fork[philo->id_right]));
 
 	print_action(data, philo->id, "has taken a fork");
-	print_action(data, philo->id, "has taken a fork");
-
 	print_action(data, philo->id, "is eating");	
 	
 	pthread_mutex_lock(&philo->feast_lock);
@@ -72,16 +63,8 @@ void	eat(t_philo *philo)
 	pthread_mutex_unlock(&philo->feast_lock);
 	timer(data->feasting_time);
 	
-	if (philo->id % 2 == 0)
-	{
-		pthread_mutex_unlock(&(data->fork[philo->id_left]));
-		pthread_mutex_unlock(&(data->fork[philo->id_right]));
-	}
-	else
-	{
-		pthread_mutex_unlock(&(data->fork[philo->id_right]));
-		pthread_mutex_unlock(&(data->fork[philo->id_left]));
-	}
+	pthread_mutex_unlock(&(data->fork[philo->id_right]));
+	pthread_mutex_unlock(&(data->fork[philo->id_left]));
 }
 
 bool 	check_stop(t_data *data)
@@ -191,6 +174,8 @@ void	start_sim(t_data *data)
 {
 	int i;
 
+	if (data->meals_sum == 0)
+		return;
 	data->sim_running = true; 
 	data->start_time = gettime(); // Stroing the starting time of the sim.
 	create_threads(data); //Calls function to create the threads for the philo.

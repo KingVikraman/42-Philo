@@ -52,7 +52,7 @@ int is_valid_check(t_data *data ,char **argv)
 {
     int i = 0;
    
-    data->meals_sum = 0;
+    data->meals_sum = -1;
 	while (argv[++i])
     {
         if (!ft_isdigit(argv[i]))
