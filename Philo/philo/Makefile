@@ -6,7 +6,7 @@
 #    By: rvikrama <rvikrama@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/02 18:42:29 by rvikrama          #+#    #+#              #
-#    Updated: 2025/04/04 00:21:43 by rvikrama         ###   ########.fr        #
+#    Updated: 2025/04/04 21:11:46 by rvikrama         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@
 # Compilers.
 
 CC 				= cc
-CFLAGS 			= $(COMP) -I$(INC_DIR) #$(DEBUGS) $(THREAD_DEBUG)  
+CFLAGS 			= $(COMP)  -I$(INC_DIR) #$(DEBUGS) $(THREAD_DEBUG) 
 COMP			= -Wall -Werror -Wextra
 DEBUGS			= -g3
 THREAD_DEBUG	= -fsanitize=thread
@@ -37,7 +37,7 @@ SRCS_DIR	= Sources/
 SRCS_FILES	=	Sources/error.c	\
 				Sources/init.c	\
 				Sources/main.c	\
-				Sources/parsing_2.c\
+				Sources/parsing.c\
 				Sources/routines.c\
 
 OBJS_FILES	=	$(patsubst %.c, $(OBJS_DIR)%.o ,$(SRCS_FILES))

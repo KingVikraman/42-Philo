@@ -91,3 +91,6 @@ What is a race condition??
 ~ It also initialises a writing_lock mutex, which is most likely used to 
   control the output printing (thus multiple threads dont print at the same
   time and mess up the output).
+
+  / When you pass by reference (&), you keep modifying the original struct.
+// When you pass by value, a copy is made, so changes don’t reflect outside.

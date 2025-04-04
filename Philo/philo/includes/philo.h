@@ -15,27 +15,14 @@
 #define STD_ERR_LIMITS	 "One or more arguments are out of range!"
 #define	STD_ERR_START	"All arguments are valid! Starting the simulation..."
 #define ERR_00 "FAILURE:Fork also cannot initialise, HAIYA!!!.\n"
-#define ERR_01 "The forks is launched Isuccessfullyy!!.\n"
-// #define ERR_02 "Initialising the writing lock ahh!\n "
 #define ERR_03 "FAILURE: Writing lock also cannot initialise. GG!!!\n."
-// #define ERR_04 "The writing locks ahh is connected ahh successfully!!\n"
-#define ERR_05 "All mutexes are initialised smoothly!\n"
-
-
-typedef struct s_args{
-	long long int	start_time;
-	int 			death_time;
-	int 			feasting_time;
-	int 			sleeping_time;
-	int 			meals_sum;
-} t_args;
 
 typedef struct s_philo
 {
 	int 		id;
 	int			id_left;
 	int			id_right;
-	long int	last_feast;     // Protection (feast-lock)
+	long long	last_feast;     // Protection (feast-lock)
 	int			num_of_meals;   // Protection (feast-lock)
 	pthread_t	thread;
 	pthread_mutex_t feast_lock;
@@ -43,12 +30,17 @@ typedef struct s_philo
 } t_philo;
 
 typedef struct s_data{
+	long long int	start_time;
+	int 			death_time;
+	int 			feasting_time;
+	int 			sleeping_time;
+	int 			meals_sum;
 	bool sim_running;      // Protection (sim_lock) 
 	int philo_sum;
 	pthread_mutex_t fork[200];
 	pthread_mutex_t writing_lock; // Locking printing
 	pthread_mutex_t sim_lock;
-	t_args *args;
+	// t_args *args;
 	t_philo philo[200];
 } t_data;
 

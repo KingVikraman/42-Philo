@@ -73,12 +73,12 @@ bool is_valid_check(char **argv, t_args *args)
 
 int main(int argc, char **argv)
 {
-	t_args args;  // Declare args struct
+	t_args args;
 
 	if (argc != 5 && argc != 6)
 		return (printf("Error 404: Invalid arguments!\n"), 1);
 	
-	if (!is_valid_check(argv, &args))  // Pass args properly
+	if (!is_valid_check(argv, &args))
 		return (1);
 
 	printf("🧵 Philosopher Simulation Settings:\n");
